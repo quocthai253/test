@@ -5,10 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Design Council | Đào tạo Graphic Design Thực Chiến</title>
     <meta name="description" content="Premium design agency landing page featuring AI-powered creative consultation.">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:ital,wght@0,400..700;1,400..700&family=Arimo:ital,wght@0,400..700;1,400..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind Configuration -->
     <script>
       tailwind.config = {
         theme: {
@@ -27,6 +36,7 @@
               'marquee': 'marquee 25s linear infinite',
               'fade-in': 'fadeIn 1s ease-out forwards',
               'slide-up': 'slideUp 0.8s ease-out forwards',
+              'spin-slow': 'spin 3s linear infinite',
             },
             keyframes: {
               marquee: {
@@ -46,12 +56,14 @@
         },
       }
     </script>
+    
+    <!-- Custom CSS -->
     <style>
       body {
         background-color: #050505;
         color: #ffffff;
         font-family: 'Arimo', sans-serif;
-        cursor: crosshair; /* Artistic cursor */
+        cursor: crosshair;
       }
       .grain-overlay {
         position: fixed;
@@ -64,7 +76,6 @@
         opacity: 0.04;
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
       }
-      /* Custom Scrollbar */
       ::-webkit-scrollbar {
         width: 6px;
         background: #ff3333;
@@ -75,32 +86,636 @@
       ::-webkit-scrollbar-track {
         background: #ff3333;
       }
-      .perspective-text {
-        transform-style: preserve-3d;
-        transition: transform 0.5s;
-      }
-      .perspective-text:hover {
-        transform: rotateX(10deg);
-      }
       ::selection {
         background: #ffffff;
         color: #ff3333;
       }
+      .stroke-text {
+        -webkit-text-stroke: 1px white;
+      }
+      
+      /* Utilities for JS interactions */
+      .service-item .service-desc {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      .service-item:hover .service-desc {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .service-item .service-bg {
+        transform: scaleX(0);
+      }
+      .service-item:hover .service-bg {
+        transform: scaleX(1);
+      }
     </style>
-  <script type="importmap">
+
+    <!-- Import Map for Google GenAI -->
+    <script type="importmap">
 {
   "imports": {
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react": "https://esm.sh/react@^19.2.4",
     "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
-    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0"
   }
 }
 </script>
 </head>
   <body>
-    <div id="root"></div>
+    <!-- Grain Overlay -->
     <div class="grain-overlay"></div>
+
+    <!-- NAVBAR -->
+    <nav id="navbar" class="fixed w-full z-40 transition-all duration-500 py-6 bg-transparent">
+      <div class="container mx-auto px-6 flex justify-between items-center">
+        <!-- Logo -->
+        <a href="#" id="nav-logo" class="text-2xl font-serif font-medium italic tracking-tight hover:text-white transition-colors text-black">
+          The Design Council
+        </a>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex space-x-10">
+          <a href="#about" class="nav-link text-sm font-condensed uppercase font-semibold tracking-wider hover:text-white transition-colors relative group text-black">
+            Về chúng tôi
+            <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-white transition-all group-hover:w-full"></span>
+          </a>
+          <a href="#services" class="nav-link text-sm font-condensed uppercase font-semibold tracking-wider hover:text-white transition-colors relative group text-black">
+            Dịch vụ
+            <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-white transition-all group-hover:w-full"></span>
+          </a>
+          <a href="#projects" class="nav-link text-sm font-condensed uppercase font-semibold tracking-wider hover:text-white transition-colors relative group text-black">
+            Dự án
+            <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-white transition-all group-hover:w-full"></span>
+          </a>
+          <a href="#contact" class="nav-link text-sm font-condensed uppercase font-semibold tracking-wider hover:text-white transition-colors relative group text-black">
+            Liên hệ
+            <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-white transition-all group-hover:w-full"></span>
+          </a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="text-black hover:text-white transition-colors focus:outline-none md:hidden">
+          <i data-lucide="menu" class="w-7 h-7"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Menu Overlay -->
+      <div id="mobile-menu" class="md:hidden fixed inset-0 bg-tdc-red z-30 transition-transform duration-500 transform translate-x-full">
+        <div class="flex flex-col items-center justify-center h-full space-y-8">
+           <button id="close-mobile-menu" class="absolute top-6 right-6 text-black hover:text-white">
+             <i data-lucide="x" class="w-8 h-8"></i>
+           </button>
+          <a href="#about" class="mobile-link text-3xl font-serif italic text-black hover:text-white transition-colors">Về chúng tôi</a>
+          <a href="#services" class="mobile-link text-3xl font-serif italic text-black hover:text-white transition-colors">Dịch vụ</a>
+          <a href="#projects" class="mobile-link text-3xl font-serif italic text-black hover:text-white transition-colors">Dự án</a>
+          <a href="#contact" class="mobile-link text-3xl font-serif italic text-black hover:text-white transition-colors">Liên hệ</a>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+        <!-- HERO SECTION -->
+        <section class="relative min-h-screen flex flex-col justify-between pt-32 pb-0 overflow-hidden bg-tdc-red text-black content-visibility-auto">
+            <!-- Dynamic Background Blob -->
+            <div id="hero-blob" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40vw] h-[40vw] bg-black rounded-full blur-[120px] opacity-[0.2] pointer-events-none mix-blend-multiply will-change-transform"></div>
+
+            <div class="container mx-auto px-6 relative z-10 flex flex-col items-start justify-center flex-grow">
+                <div class="border-t border-black mb-8 w-12 transition-all duration-700 hover:w-32"></div>
+                
+                <p class="text-sm md:text-base font-condensed uppercase font-bold tracking-[0.3em] text-white mb-4 animate-[fadeIn_1s_ease-out_both]">
+                Est. 2023 &mdash; Ho Chi Minh City
+                </p>
+                
+                <h1 class="text-6xl md:text-8xl lg:text-[10rem] font-serif font-light leading-[0.85] tracking-tighter text-black animate-[slideUp_1s_ease-out_both]">
+                Design <br />
+                <span class="italic font-normal ml-8 md:ml-32 text-white hover:text-black transition-colors duration-500">Mentorship</span>
+                </h1>
+                
+                <div class="mt-12 md:mt-16 max-w-xl self-end text-right animate-[fadeIn_1.5s_ease-out_0.5s_both]">
+                <p class="text-black text-lg md:text-xl font-sans font-medium leading-relaxed">
+                    Không đào tạo thợ thiết kế.<br/>
+                    Chúng tôi kiến tạo <span class="text-white border-b border-white pb-1">Tư duy Sáng tạo</span>.
+                </p>
+                <div class="mt-8 flex justify-end gap-4">
+                    <a href="#register" class="group relative px-8 py-3 bg-black text-white overflow-hidden font-condensed font-bold uppercase tracking-widest text-sm hover:text-black transition-colors">
+                    <div class="absolute inset-0 w-full h-full bg-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
+                    <span class="relative z-10">Đăng ký ngay</span>
+                    </a>
+                </div>
+                </div>
+            </div>
+
+            <!-- Marquee Effect -->
+            <div class="relative w-full overflow-hidden py-8 bg-black mt-12 transform -skew-y-2 origin-bottom-left scale-105 border-t-4 border-white">
+                <div class="flex animate-marquee whitespace-nowrap">
+                  <!-- Generating repeating items for marquee -->
+                  <div class="flex items-center gap-12 mx-8"><span class="text-4xl md:text-7xl font-condensed font-bold uppercase text-transparent stroke-text text-white/90 hover:text-tdc-red transition-colors duration-300">Creative Thinking</span><i data-lucide="star" class="text-tdc-red animate-spin-slow w-8 h-8 fill-tdc-red"></i><span class="text-4xl md:text-7xl font-serif italic text-white/50">Portfolio Ready</span><i data-lucide="star" class="text-tdc-red animate-spin-slow w-8 h-8 fill-tdc-red"></i></div>
+                  <div class="flex items-center gap-12 mx-8"><span class="text-4xl md:text-7xl font-condensed font-bold uppercase text-transparent stroke-text text-white/90 hover:text-tdc-red transition-colors duration-300">Creative Thinking</span><i data-lucide="star" class="text-tdc-red animate-spin-slow w-8 h-8 fill-tdc-red"></i><span class="text-4xl md:text-7xl font-serif italic text-white/50">Portfolio Ready</span><i data-lucide="star" class="text-tdc-red animate-spin-slow w-8 h-8 fill-tdc-red"></i></div>
+                  <div class="flex items-center gap-12 mx-8"><span class="text-4xl md:text-7xl font-condensed font-bold uppercase text-transparent stroke-text text-white/90 hover:text-tdc-red transition-colors duration-300">Creative Thinking</span><i data-lucide="star" class="text-tdc-red animate-spin-slow w-8 h-8 fill-tdc-red"></i><span class="text-4xl md:text-7xl font-serif italic text-white/50">Portfolio Ready</span><i data-lucide="star" class="text-tdc-red animate-spin-slow w-8 h-8 fill-tdc-red"></i></div>
+                  <div class="flex items-center gap-12 mx-8"><span class="text-4xl md:text-7xl font-condensed font-bold uppercase text-transparent stroke-text text-white/90 hover:text-tdc-red transition-colors duration-300">Creative Thinking</span><i data-lucide="star" class="text-tdc-red animate-spin-slow w-8 h-8 fill-tdc-red"></i><span class="text-4xl md:text-7xl font-serif italic text-white/50">Portfolio Ready</span><i data-lucide="star" class="text-tdc-red animate-spin-slow w-8 h-8 fill-tdc-red"></i></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVICES SECTION -->
+        <section id="services" class="py-32 bg-tdc-black relative z-10 text-white">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-24">
+                <h2 class="text-5xl md:text-7xl font-serif font-medium text-white leading-none">
+                    Chương trình <br/> <span class="text-tdc-red italic">Đào tạo</span>
+                </h2>
+                <p class="text-gray-400 max-w-sm text-right mt-6 md:mt-0 font-sans font-light">
+                    Kết hợp giữa tư duy học thuật và quy trình Agency thực chiến.
+                </p>
+                </div>
+
+                <div class="flex flex-col" id="services-list">
+                    <!-- Services Items -->
+                    <div class="service-item group relative border-t border-white/10 hover:border-tdc-red transition-colors duration-500 cursor-pointer">
+                        <div class="py-12 flex flex-col md:flex-row items-baseline justify-between gap-6 relative z-10">
+                            <span class="font-condensed text-sm text-gray-500 group-hover:text-black transition-colors duration-300">01</span>
+                            <h3 class="text-4xl md:text-6xl font-serif text-gray-300 group-hover:text-white group-hover:translate-x-4 transition-all duration-500 ease-out flex-grow">Coaching 1:1</h3>
+                            <p class="service-desc font-sans font-light max-w-xs text-right text-black font-medium transition-all duration-300">Kèm cặp riêng biệt. Lộ trình cá nhân hoá.</p>
+                            <div class="hidden md:block opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <i data-lucide="arrow-up-right" class="text-black w-8 h-8"></i>
+                            </div>
+                        </div>
+                        <div class="service-bg absolute inset-0 bg-tdc-red transition-transform duration-500 origin-left"></div>
+                    </div>
+
+                    <div class="service-item group relative border-t border-white/10 hover:border-tdc-red transition-colors duration-500 cursor-pointer">
+                        <div class="py-12 flex flex-col md:flex-row items-baseline justify-between gap-6 relative z-10">
+                            <span class="font-condensed text-sm text-gray-500 group-hover:text-black transition-colors duration-300">02</span>
+                            <h3 class="text-4xl md:text-6xl font-serif text-gray-300 group-hover:text-white group-hover:translate-x-4 transition-all duration-500 ease-out flex-grow">Brand Identity</h3>
+                            <p class="service-desc font-sans font-light max-w-xs text-right text-black font-medium transition-all duration-300">Tư duy chiến lược và hệ thống nhận diện.</p>
+                            <div class="hidden md:block opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <i data-lucide="arrow-up-right" class="text-black w-8 h-8"></i>
+                            </div>
+                        </div>
+                        <div class="service-bg absolute inset-0 bg-tdc-red transition-transform duration-500 origin-left"></div>
+                    </div>
+
+                    <div class="service-item group relative border-t border-white/10 hover:border-tdc-red transition-colors duration-500 cursor-pointer">
+                        <div class="py-12 flex flex-col md:flex-row items-baseline justify-between gap-6 relative z-10">
+                            <span class="font-condensed text-sm text-gray-500 group-hover:text-black transition-colors duration-300">03</span>
+                            <h3 class="text-4xl md:text-6xl font-serif text-gray-300 group-hover:text-white group-hover:translate-x-4 transition-all duration-500 ease-out flex-grow">UI/UX Design</h3>
+                            <p class="service-desc font-sans font-light max-w-xs text-right text-black font-medium transition-all duration-300">Thiết kế trải nghiệm người dùng hiện đại.</p>
+                            <div class="hidden md:block opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <i data-lucide="arrow-up-right" class="text-black w-8 h-8"></i>
+                            </div>
+                        </div>
+                        <div class="service-bg absolute inset-0 bg-tdc-red transition-transform duration-500 origin-left"></div>
+                    </div>
+
+                    <div class="service-item group relative border-t border-white/10 hover:border-tdc-red transition-colors duration-500 cursor-pointer">
+                        <div class="py-12 flex flex-col md:flex-row items-baseline justify-between gap-6 relative z-10">
+                            <span class="font-condensed text-sm text-gray-500 group-hover:text-black transition-colors duration-300">04</span>
+                            <h3 class="text-4xl md:text-6xl font-serif text-gray-300 group-hover:text-white group-hover:translate-x-4 transition-all duration-500 ease-out flex-grow">Art Direction</h3>
+                            <p class="service-desc font-sans font-light max-w-xs text-right text-black font-medium transition-all duration-300">Định hướng nghệ thuật và nhiếp ảnh.</p>
+                            <div class="hidden md:block opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <i data-lucide="arrow-up-right" class="text-black w-8 h-8"></i>
+                            </div>
+                        </div>
+                        <div class="service-bg absolute inset-0 bg-tdc-red transition-transform duration-500 origin-left"></div>
+                    </div>
+
+                    <div class="service-item group relative border-t border-white/10 hover:border-tdc-red transition-colors duration-500 cursor-pointer">
+                        <div class="py-12 flex flex-col md:flex-row items-baseline justify-between gap-6 relative z-10">
+                            <span class="font-condensed text-sm text-gray-500 group-hover:text-black transition-colors duration-300">05</span>
+                            <h3 class="text-4xl md:text-6xl font-serif text-gray-300 group-hover:text-white group-hover:translate-x-4 transition-all duration-500 ease-out flex-grow">Packaging</h3>
+                            <p class="service-desc font-sans font-light max-w-xs text-right text-black font-medium transition-all duration-300">Tư duy bao bì thương mại và in ấn.</p>
+                            <div class="hidden md:block opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <i data-lucide="arrow-up-right" class="text-black w-8 h-8"></i>
+                            </div>
+                        </div>
+                        <div class="service-bg absolute inset-0 bg-tdc-red transition-transform duration-500 origin-left"></div>
+                    </div>
+                    
+                    <div class="border-t border-white/10"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WHY CHOOSE US -->
+        <section id="why-choose-us" class="py-24 bg-tdc-red text-white border-t border-black/10 relative overflow-hidden">
+            <div id="why-bg-text" class="absolute top-0 right-0 -mr-20 -mt-20 opacity-[0.1] text-black text-[20rem] font-serif font-bold italic pointer-events-none select-none will-change-transform mix-blend-overlay">
+                Why
+            </div>
+
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="flex flex-col lg:flex-row gap-16">
+                    <div class="lg:w-1/3">
+                        <span class="text-black font-condensed font-bold uppercase tracking-widest text-sm mb-4 block">Sự Khác Biệt</span>
+                        <h2 class="text-4xl md:text-5xl font-serif font-medium mb-6 leading-tight text-white">
+                            Tại sao chọn <br/>
+                            <span class="italic text-black">The Design Council?</span>
+                        </h2>
+                        <p class="text-white/90 font-sans font-medium leading-relaxed mb-8 text-lg">
+                            Chúng tôi không tạo ra những "thợ thiết kế". Chúng tôi đào tạo những nhà sáng tạo có tư duy độc lập và kỹ năng sắc bén.
+                        </p>
+                        <div class="h-px w-24 bg-black"></div>
+                        <div class="mt-12 hidden lg:block">
+                            <div class="inline-flex flex-col gap-4">
+                                <div class="flex items-center gap-3 text-sm font-condensed uppercase tracking-wider text-black font-bold">
+                                    <i data-lucide="check-circle" class="text-white w-4 h-4"></i> <span>Cam kết đầu ra</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-sm font-condensed uppercase tracking-wider text-black font-bold">
+                                    <i data-lucide="check-circle" class="text-white w-4 h-4"></i> <span>Hỗ trợ trọn đời</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-sm font-condensed uppercase tracking-wider text-black font-bold">
+                                    <i data-lucide="check-circle" class="text-white w-4 h-4"></i> <span>Chứng nhận hoàn thành</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:w-2/3 grid grid-cols-1 gap-12">
+                        <div class="flex flex-col md:flex-row gap-6 group">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="w-16 h-16 rounded-full border-2 border-white bg-transparent flex items-center justify-center text-white group-hover:bg-white group-hover:text-tdc-red transition-all duration-500 shadow-xl">
+                                    <i data-lucide="target" class="w-6 h-6"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-serif font-medium mb-3 text-black group-hover:text-white transition-colors duration-300">Coaching 1:1 Độc Quyền</h3>
+                                <p class="text-white font-sans font-light leading-relaxed text-base">Không dạy đại trà. Mỗi học viên là một dự án riêng biệt. Mentor bám sát tiến độ, sửa bài chi tiết từng pixel và định hướng phong cách cá nhân độc bản.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-6 group">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="w-16 h-16 rounded-full border-2 border-white bg-transparent flex items-center justify-center text-white group-hover:bg-white group-hover:text-tdc-red transition-all duration-500 shadow-xl">
+                                    <i data-lucide="award" class="w-6 h-6"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-serif font-medium mb-3 text-black group-hover:text-white transition-colors duration-300">Mentor Thực Chiến</h3>
+                                <p class="text-white font-sans font-light leading-relaxed text-base">Học trực tiếp từ Art Director & Senior Designer tại các Agency hàng đầu. Kiến thức được cập nhật liên tục theo xu hướng thị trường thực tế, nói không với lý thuyết suông.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-6 group">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="w-16 h-16 rounded-full border-2 border-white bg-transparent flex items-center justify-center text-white group-hover:bg-white group-hover:text-tdc-red transition-all duration-500 shadow-xl">
+                                    <i data-lucide="rocket" class="w-6 h-6"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-serif font-medium mb-3 text-black group-hover:text-white transition-colors duration-300">Sẵn Sàng Sự Nghiệp</h3>
+                                <p class="text-white font-sans font-light leading-relaxed text-base">Không chỉ dạy công cụ. Chúng tôi rèn luyện tư duy Critical Thinking và hỗ trợ hoàn thiện Portfolio chuẩn quốc tế để bạn tự tin ứng tuyển hoặc làm Freelance ngay.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PORTFOLIO SECTION -->
+        <section id="projects" class="py-24 bg-white text-tdc-black">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-24">
+                    <h2 class="text-6xl md:text-8xl font-serif font-medium leading-none tracking-tighter">
+                        Selected <br/> Works
+                    </h2>
+                    <a href="#" class="group hidden md:flex items-center gap-2 text-sm font-condensed font-bold uppercase tracking-widest pb-1 border-b border-black hover:text-tdc-red hover:border-tdc-red transition-all">
+                        Xem tất cả dự án <i data-lucide="arrow-up-right" class="w-4 h-4 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+
+                <div class="space-y-32">
+                    <!-- Project 1 -->
+                    <div class="flex flex-col md:flex-row gap-12 items-center">
+                        <div class="w-full md:w-3/5 group overflow-hidden">
+                            <div class="relative overflow-hidden aspect-[16/10] bg-gray-100">
+                                <img src="https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=800&auto=format&fit=crop" alt="Minimalist Architecture" loading="lazy" width="800" height="500" class="w-full h-full object-cover transform grayscale hover:grayscale-0 transition-all duration-700 ease-in-out group-hover:scale-110">
+                                <div class="absolute inset-0 bg-tdc-red/20 mix-blend-multiply opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-2/5 md:px-8">
+                            <span class="text-tdc-red text-xs font-condensed font-bold uppercase tracking-[0.2em] mb-4 block">01 / Branding</span>
+                            <h3 class="text-4xl md:text-5xl font-serif font-medium mb-6 leading-tight">Minimalist Architecture</h3>
+                            <p class="text-gray-500 font-sans leading-relaxed text-lg mb-8">Rebranding thương hiệu kiến trúc - Khoá Brand Master.</p>
+                            <a href="#" class="inline-block text-sm font-bold uppercase tracking-wider border-b border-gray-300 hover:border-black transition-colors pb-1">Xem chi tiết</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Project 2 -->
+                    <div class="flex flex-col md:flex-row-reverse gap-12 items-center">
+                        <div class="w-full md:w-3/5 group overflow-hidden">
+                            <div class="relative overflow-hidden aspect-[16/10] bg-gray-100">
+                                <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=800&auto=format&fit=crop" alt="Urban Coffee Culture" loading="lazy" width="800" height="500" class="w-full h-full object-cover transform grayscale hover:grayscale-0 transition-all duration-700 ease-in-out group-hover:scale-110">
+                                <div class="absolute inset-0 bg-tdc-red/20 mix-blend-multiply opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-2/5 md:px-8">
+                            <span class="text-tdc-red text-xs font-condensed font-bold uppercase tracking-[0.2em] mb-4 block">02 / Packaging</span>
+                            <h3 class="text-4xl md:text-5xl font-serif font-medium mb-6 leading-tight">Urban Coffee Culture</h3>
+                            <p class="text-gray-500 font-sans leading-relaxed text-lg mb-8">Thiết kế bao bì Specialty Coffee - Khoá Foundation.</p>
+                            <a href="#" class="inline-block text-sm font-bold uppercase tracking-wider border-b border-gray-300 hover:border-black transition-colors pb-1">Xem chi tiết</a>
+                        </div>
+                    </div>
+
+                    <!-- Project 3 -->
+                    <div class="flex flex-col md:flex-row gap-12 items-center">
+                        <div class="w-full md:w-3/5 group overflow-hidden">
+                            <div class="relative overflow-hidden aspect-[16/10] bg-gray-100">
+                                <img src="https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?q=80&w=800&auto=format&fit=crop" alt="Fintech Revolution" loading="lazy" width="800" height="500" class="w-full h-full object-cover transform grayscale hover:grayscale-0 transition-all duration-700 ease-in-out group-hover:scale-110">
+                                <div class="absolute inset-0 bg-tdc-red/20 mix-blend-multiply opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-2/5 md:px-8">
+                            <span class="text-tdc-red text-xs font-condensed font-bold uppercase tracking-[0.2em] mb-4 block">03 / UI/UX</span>
+                            <h3 class="text-4xl md:text-5xl font-serif font-medium mb-6 leading-tight">Fintech Revolution</h3>
+                            <p class="text-gray-500 font-sans leading-relaxed text-lg mb-8">App tài chính cá nhân - Khoá UI/UX Intensive.</p>
+                            <a href="#" class="inline-block text-sm font-bold uppercase tracking-wider border-b border-gray-300 hover:border-black transition-colors pb-1">Xem chi tiết</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Project 4 -->
+                     <div class="flex flex-col md:flex-row-reverse gap-12 items-center">
+                        <div class="w-full md:w-3/5 group overflow-hidden">
+                            <div class="relative overflow-hidden aspect-[16/10] bg-gray-100">
+                                <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=800&auto=format&fit=crop" alt="Fashion Editorial" loading="lazy" width="800" height="500" class="w-full h-full object-cover transform grayscale hover:grayscale-0 transition-all duration-700 ease-in-out group-hover:scale-110">
+                                <div class="absolute inset-0 bg-tdc-red/20 mix-blend-multiply opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-2/5 md:px-8">
+                            <span class="text-tdc-red text-xs font-condensed font-bold uppercase tracking-[0.2em] mb-4 block">04 / Art Direction</span>
+                            <h3 class="text-4xl md:text-5xl font-serif font-medium mb-6 leading-tight">Fashion Editorial</h3>
+                            <p class="text-gray-500 font-sans leading-relaxed text-lg mb-8">Concept chụp ảnh thời trang - Khoá Creative.</p>
+                            <a href="#" class="inline-block text-sm font-bold uppercase tracking-wider border-b border-gray-300 hover:border-black transition-colors pb-1">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TESTIMONIALS SECTION -->
+        <section class="py-24 bg-tdc-black border-t border-white/5 relative overflow-hidden">
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="text-center mb-16">
+                    <span class="text-tdc-red font-condensed font-bold uppercase tracking-widest text-sm mb-4 block animate-[fadeIn_1s_ease-out_both]">Học viên nói gì về chúng tôi</span>
+                    <h2 class="text-4xl md:text-5xl font-serif font-medium text-white mb-6">Câu chuyện <span class="italic text-gray-400">Thành công</span></h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Testimonial 1 -->
+                    <div class="bg-white/5 p-8 rounded-none border border-white/5 hover:border-tdc-red/30 transition-all duration-300 group">
+                        <div class="mb-6 text-tdc-red opacity-50 group-hover:opacity-100 transition-opacity">
+                            <i data-lucide="quote" class="w-10 h-10"></i>
+                        </div>
+                        <p class="text-gray-300 font-serif text-lg leading-relaxed italic mb-8 min-h-[120px]">"Khóa học đã thay đổi hoàn toàn tư duy thiết kế của mình. Mentor cực kỳ tâm huyết, không chỉ dạy công cụ mà còn dạy cách 'nhìn' và 'cảm' cái đẹp. Sửa bài chi tiết đến từng pixel."</p>
+                        <div class="flex items-center gap-4 border-t border-white/5 pt-6">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80" alt="Nguyễn Minh Tú" loading="lazy" width="48" height="48" class="w-12 h-12 rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300 ring-2 ring-transparent group-hover:ring-tdc-red/50 bg-gray-800">
+                            <div>
+                                <h4 class="text-white font-sans font-medium text-sm">Nguyễn Minh Tú</h4>
+                                <p class="text-tdc-red text-xs font-condensed uppercase tracking-wider mt-1">Graphic Design Foundation</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Testimonial 2 -->
+                    <div class="bg-white/5 p-8 rounded-none border border-white/5 hover:border-tdc-red/30 transition-all duration-300 group">
+                        <div class="mb-6 text-tdc-red opacity-50 group-hover:opacity-100 transition-opacity">
+                             <i data-lucide="quote" class="w-10 h-10"></i>
+                        </div>
+                        <p class="text-gray-300 font-serif text-lg leading-relaxed italic mb-8 min-h-[120px]">"Từ zero đến khi có portfolio xin việc chỉ trong 3 tháng. Phương pháp Coaching 1:1 thực sự hiệu quả cho người chuyển ngành (non-IT) như mình. Giờ mình đã tự tin apply vào các cty Product."</p>
+                        <div class="flex items-center gap-4 border-t border-white/5 pt-6">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80" alt="Trần Hoàng Nam" loading="lazy" width="48" height="48" class="w-12 h-12 rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300 ring-2 ring-transparent group-hover:ring-tdc-red/50 bg-gray-800">
+                            <div>
+                                <h4 class="text-white font-sans font-medium text-sm">Trần Hoàng Nam</h4>
+                                <p class="text-tdc-red text-xs font-condensed uppercase tracking-wider mt-1">UI/UX Intensive</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Testimonial 3 -->
+                    <div class="bg-white/5 p-8 rounded-none border border-white/5 hover:border-tdc-red/30 transition-all duration-300 group">
+                        <div class="mb-6 text-tdc-red opacity-50 group-hover:opacity-100 transition-opacity">
+                             <i data-lucide="quote" class="w-10 h-10"></i>
+                        </div>
+                        <p class="text-gray-300 font-serif text-lg leading-relaxed italic mb-8 min-h-[120px]">"Mình học được cách tư duy chiến lược chứ không chỉ là vẽ vời. Những kiến thức thực chiến này không sách vở nào dạy cả. Rất đáng tiền cho ai muốn làm Branding chuyên nghiệp."</p>
+                        <div class="flex items-center gap-4 border-t border-white/5 pt-6">
+                            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=150&q=80" alt="Lê Lan Anh" loading="lazy" width="48" height="48" class="w-12 h-12 rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300 ring-2 ring-transparent group-hover:ring-tdc-red/50 bg-gray-800">
+                            <div>
+                                <h4 class="text-white font-sans font-medium text-sm">Lê Lan Anh</h4>
+                                <p class="text-tdc-red text-xs font-condensed uppercase tracking-wider mt-1">Brand Master</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- REGISTER FORM -->
+        <section id="register" class="py-32 bg-tdc-red relative overflow-hidden">
+             <div class="absolute top-0 left-1/2 w-px h-full bg-black/20"></div>
+
+             <div class="container mx-auto px-6 relative z-10">
+                <div class="max-w-4xl mx-auto bg-tdc-black border border-white/10 p-8 md:p-16 shadow-[20px_20px_0px_0px_rgba(0,0,0,1)] relative">
+                    <!-- Corner accents -->
+                    <div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-tdc-red"></div>
+                    <div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-tdc-red"></div>
+                    <div class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-tdc-red"></div>
+                    <div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-tdc-red"></div>
+
+                    <div class="text-center mb-12">
+                        <h2 className="text-3xl md:text-5xl font-serif text-white mb-4">
+                            Bắt đầu hành trình <br/> <span class="italic text-tdc-red">Sáng tạo</span>
+                        </h2>
+                        <p class="text-gray-400 font-sans font-light mt-4">
+                            Để lại thông tin. Chúng tôi sẽ liên hệ tư vấn lộ trình phù hợp nhất cho bạn.
+                        </p>
+                    </div>
+
+                    <div id="form-content">
+                        <form id="contact-form" class="space-y-8">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="group">
+                                    <label class="block text-xs font-condensed uppercase tracking-widest text-gray-500 mb-2 group-focus-within:text-tdc-red transition-colors">Họ và Tên</label>
+                                    <input required type="text" class="w-full bg-transparent border-b border-white/20 py-3 text-white focus:outline-none focus:border-tdc-red transition-colors font-serif text-xl" placeholder="Nguyễn Văn A">
+                                </div>
+                                <div class="group">
+                                    <label class="block text-xs font-condensed uppercase tracking-widest text-gray-500 mb-2 group-focus-within:text-tdc-red transition-colors">Số Điện Thoại</label>
+                                    <input required type="tel" class="w-full bg-transparent border-b border-white/20 py-3 text-white focus:outline-none focus:border-tdc-red transition-colors font-serif text-xl" placeholder="0909 xxx xxx">
+                                </div>
+                            </div>
+                            <div class="group">
+                                <label class="block text-xs font-condensed uppercase tracking-widest text-gray-500 mb-2 group-focus-within:text-tdc-red transition-colors">Email</label>
+                                <input required type="email" class="w-full bg-transparent border-b border-white/20 py-3 text-white focus:outline-none focus:border-tdc-red transition-colors font-serif text-xl" placeholder="hello@example.com">
+                            </div>
+                            <div class="group">
+                                <label class="block text-xs font-condensed uppercase tracking-widest text-gray-500 mb-2 group-focus-within:text-tdc-red transition-colors">Khóa học quan tâm</label>
+                                <select class="w-full bg-transparent border-b border-white/20 py-3 text-white focus:outline-none focus:border-tdc-red transition-colors font-serif text-xl appearance-none">
+                                    <option value="" class="bg-tdc-black text-gray-500">Chọn khóa học...</option>
+                                    <option value="foundation" class="bg-tdc-black">Graphic Design Foundation</option>
+                                    <option value="uiux" class="bg-tdc-black">UI/UX Design Intensive</option>
+                                    <option value="brand" class="bg-tdc-black">Brand Identity Master</option>
+                                    <option value="1on1" class="bg-tdc-black">Coaching 1:1 Đặc biệt</option>
+                                </select>
+                            </div>
+                            <div class="pt-8 text-center">
+                                <button type="submit" id="submit-btn" class="inline-flex items-center gap-3 px-10 py-4 bg-white text-black font-condensed font-bold uppercase tracking-widest hover:bg-tdc-red hover:text-white transition-all duration-300 disabled:opacity-50">
+                                    <span id="btn-text">Gửi đăng ký</span>
+                                    <i data-lucide="send" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div id="success-message" class="hidden flex-col items-center justify-center py-12 animate-[fadeIn_0.5s_ease-out]">
+                        <div class="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 mb-6">
+                            <i data-lucide="check" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="text-2xl font-serif text-white mb-2">Đăng ký thành công!</h3>
+                        <p class="text-gray-400 text-center">Cảm ơn bạn đã quan tâm. Team TDC sẽ liên hệ sớm nhất.</p>
+                    </div>
+                </div>
+             </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="contact" class="bg-tdc-black border-t border-white/10 text-white pt-24 pb-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+                <div class="col-span-1 lg:col-span-2">
+                    <h2 class="text-4xl font-serif font-medium italic mb-8">The Design Council</h2>
+                    <p class="text-gray-400 max-w-sm mb-8 leading-relaxed font-sans font-light">
+                        Nơi đào tạo Graphic Design chuyên sâu hàng đầu Việt Nam. Chúng tôi không chỉ dạy thiết kế, chúng tôi kiến tạo sự nghiệp với phương pháp Coaching 1:1 độc quyền cùng đội ngũ Artist thực chiến.
+                    </p>
+                    <div class="flex space-x-6">
+                        <a href="https://www.facebook.com/thedesign.council" target="_blank" class="text-gray-400 hover:text-tdc-red transition-colors"><i data-lucide="facebook" class="w-6 h-6"></i></a>
+                        <a href="https://www.instagram.com/thedesign.council/" target="_blank" class="text-gray-400 hover:text-tdc-red transition-colors"><i data-lucide="instagram" class="w-6 h-6"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-sm font-condensed font-bold uppercase tracking-[0.2em] mb-8 text-tdc-red">Liên hệ</h3>
+                    <ul class="space-y-6 text-gray-300 text-sm font-sans">
+                        <li class="flex items-start gap-4"><i data-lucide="map-pin" class="w-5 h-5 text-gray-500 mt-1"></i> <span class="leading-relaxed">Ho Chi Minh City, Vietnam</span></li>
+                        <li class="flex items-center gap-4"><i data-lucide="mail" class="w-5 h-5 text-gray-500"></i> <a href="mailto:hello@thedesigncouncil.vn" class="hover:text-tdc-red transition-colors">hello@thedesigncouncil.vn</a></li>
+                        <li class="flex items-center gap-4"><i data-lucide="phone" class="w-5 h-5 text-gray-500"></i> <a href="tel:+84123456789" class="hover:text-tdc-red transition-colors">0123 456 789</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-condensed font-bold uppercase tracking-[0.2em] mb-8 text-tdc-red">Pháp lý</h3>
+                    <ul class="space-y-6 text-gray-300 text-sm font-sans">
+                        <li><span class="block text-gray-500 text-xs font-condensed uppercase tracking-wider mb-1">Công ty TNHH</span> The Design Council</li>
+                        <li><span class="block text-gray-500 text-xs font-condensed uppercase tracking-wider mb-1">Mã số thuế</span> 0317868162</li>
+                        <li><span class="block text-gray-500 text-xs font-condensed uppercase tracking-wider mb-1">Ngày thành lập</span> 05/06/2023</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-600 font-condensed uppercase tracking-widest">
+                <p>&copy; <span id="year"></span> The Design Council. All rights reserved.</p>
+                <div class="flex space-x-8 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MAIN SCRIPT (MODULE) -->
+    <script type="module">
+        // --- Initialize Icons ---
+        lucide.createIcons();
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // --- Navbar Logic ---
+        const navbar = document.getElementById('navbar');
+        const navLogo = document.getElementById('nav-logo');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMobileMenu = document.getElementById('close-mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-black/90', 'backdrop-blur-md', 'border-b', 'border-white/10', 'py-4');
+                navbar.classList.remove('bg-transparent', 'py-6');
+                navLogo.classList.remove('text-black');
+                navLogo.classList.add('text-white');
+                mobileMenuBtn.classList.remove('text-black');
+                mobileMenuBtn.classList.add('text-white');
+                navLinks.forEach(link => {
+                    link.classList.remove('text-black');
+                    link.classList.add('text-gray-300');
+                });
+            } else {
+                navbar.classList.remove('bg-black/90', 'backdrop-blur-md', 'border-b', 'border-white/10', 'py-4');
+                navbar.classList.add('bg-transparent', 'py-6');
+                navLogo.classList.add('text-black');
+                navLogo.classList.remove('text-white');
+                mobileMenuBtn.classList.add('text-black');
+                mobileMenuBtn.classList.remove('text-white');
+                navLinks.forEach(link => {
+                    link.classList.add('text-black');
+                    link.classList.remove('text-gray-300');
+                });
+            }
+        });
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-full');
+            mobileMenu.classList.add('translate-x-0');
+        });
+
+        const closeMenu = () => {
+            mobileMenu.classList.add('translate-x-full');
+            mobileMenu.classList.remove('translate-x-0');
+        }
+
+        closeMobileMenu.addEventListener('click', closeMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+        // --- Hero Animation (Blob) ---
+        const blob = document.getElementById('hero-blob');
+        let animationFrameId;
+
+        const handleScroll = () => {
+             animationFrameId = requestAnimationFrame(() => {
+                const scrollY = window.scrollY;
+                if (blob) {
+                    blob.style.transform = `translate(-50%, calc(-50% + ${scrollY * 0.5}px)) scale(${1 + scrollY * 0.001})`;
+                }
+            });
+        }
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
+        // --- Why Choose Us Parallax ---
+        const whySection = document.getElementById('why-choose-us');
+        const whyText = document.getElementById('why-bg-text');
+
+        window.addEventListener('scroll', () => {
+            if (!whySection || !whyText) return;
+            const rect = whySection.getBoundingClientRect();
+            if (rect.top < window.innerHeight && rect.bottom > 0) {
+                const offset = (window.innerHeight - rect.top) * 0.1;
+                whyText.style.transform = `translateY(${offset}px)`;
+            }
+        });
+
+        // --- Register Form Logic ---
+        const form = document.getElementById('contact-form');
+        const formContent = document.getElementById('form-content');
+        const successMessage = document.getElementById('success-message');
+        const submitBtn = document.getElementById('submit-btn');
+        const btnText = document.getElementById('btn-text');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            submitBtn.disabled = true;
+            btnText.textContent = "Đang gửi...";
+
+            setTimeout(() => {
+                formContent.style.display = 'none';
+                successMessage.classList.remove('hidden');
+                successMessage.classList.add('flex');
+            }, 1500);
+        });
+    </script>
   </body>
 </html>

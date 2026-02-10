@@ -9,7 +9,6 @@ const WhyChooseUs = lazy(() => import('./components/WhyChooseUs'));
 const Portfolio = lazy(() => import('./components/Portfolio'));
 const Testimonials = lazy(() => import('./components/Testimonials'));
 const RegisterForm = lazy(() => import('./components/RegisterForm'));
-const ChatBot = lazy(() => import('./components/ChatBot'));
 
 const LoadingFallback = () => (
   <div className="py-24 flex justify-center items-center bg-tdc-black">
@@ -40,9 +39,6 @@ const App: React.FC = () => {
         </Suspense>
       </main>
       <Footer />
-      <Suspense fallback={null}>
-        <ChatBot />
-      </Suspense>
     </div>
   );
 };
