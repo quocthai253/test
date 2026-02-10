@@ -8,28 +8,29 @@ const projects: Project[] = [
     title: 'Minimalist Architecture',
     category: 'Branding',
     description: 'Rebranding thương hiệu kiến trúc - Khoá Brand Master.',
-    imageUrl: 'https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2000&auto=format&fit=crop',
+    // Reduced width from 2000 to 800 for performance
+    imageUrl: 'https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'p2',
     title: 'Urban Coffee Culture',
     category: 'Packaging',
     description: 'Thiết kế bao bì Specialty Coffee - Khoá Foundation.',
-    imageUrl: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=2000&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'p3',
     title: 'Fintech Revolution',
     category: 'UI/UX',
     description: 'App tài chính cá nhân - Khoá UI/UX Intensive.',
-    imageUrl: 'https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?q=80&w=2000&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'p4',
     title: 'Fashion Editorial',
     category: 'Art Direction',
     description: 'Concept chụp ảnh thời trang - Khoá Creative.',
-    imageUrl: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2000&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=800&auto=format&fit=crop',
   }
 ];
 
@@ -56,13 +57,16 @@ const Portfolio: React.FC = () => {
             >
               {/* Image Side */}
               <div className="w-full md:w-3/5 group overflow-hidden">
-                 <div className="relative overflow-hidden aspect-[16/10] grayscale hover:grayscale-0 transition-all duration-700 ease-in-out">
+                 <div className="relative overflow-hidden aspect-[16/10] bg-gray-100">
                     <img 
                       src={project.imageUrl} 
-                      alt={project.title} 
-                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                      alt={project.title}
+                      loading="lazy" 
+                      width="800"
+                      height="500"
+                      className="w-full h-full object-cover transform grayscale hover:grayscale-0 transition-all duration-700 ease-in-out group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-tdc-red/20 mix-blend-multiply opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div className="absolute inset-0 bg-tdc-red/20 mix-blend-multiply opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                  </div>
               </div>
 

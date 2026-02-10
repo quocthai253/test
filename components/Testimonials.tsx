@@ -53,7 +53,10 @@ const Testimonials: React.FC = () => {
                 <img 
                   src={item.avatar} 
                   alt={item.name} 
-                  className="w-12 h-12 rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300 ring-2 ring-transparent group-hover:ring-tdc-red/50"
+                  loading="lazy"
+                  width="48"
+                  height="48"
+                  className="w-12 h-12 rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300 ring-2 ring-transparent group-hover:ring-tdc-red/50 bg-gray-800"
                 />
                 <div>
                   <h4 className="text-white font-sans font-medium text-sm">{item.name}</h4>

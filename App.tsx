@@ -1,13 +1,21 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import Services from './components/Services';
-import WhyChooseUs from './components/WhyChooseUs';
-import Portfolio from './components/Portfolio';
-import Testimonials from './components/Testimonials';
-import RegisterForm from './components/RegisterForm';
 import Footer from './components/Footer';
-import ChatBot from './components/ChatBot';
+
+// Lazy load components that are not immediately visible
+const Services = lazy(() => import('./components/Services'));
+const WhyChooseUs = lazy(() => import('./components/WhyChooseUs'));
+const Portfolio = lazy(() => import('./components/Portfolio'));
+const Testimonials = lazy(() => import('./components/Testimonials'));
+const RegisterForm = lazy(() => import('./components/RegisterForm'));
+const ChatBot = lazy(() => import('./components/ChatBot'));
+
+const LoadingFallback = () => (
+  <div className="py-24 flex justify-center items-center bg-tdc-black">
+    <div className="w-8 h-8 border-2 border-white/20 border-t-tdc-red rounded-full animate-spin"></div>
+  </div>
+);
 
 const App: React.FC = () => {
   return (
@@ -15,14 +23,26 @@ const App: React.FC = () => {
       <Navbar />
       <main>
         <Hero />
-        <Services />
-        <WhyChooseUs />
-        <Portfolio />
-        <Testimonials />
-        <RegisterForm />
+        <Suspense fallback={<LoadingFallback />}>
+          <Services />
+        </Suspense>
+        <Suspense fallback={<LoadingFallback />}>
+          <WhyChooseUs />
+        </Suspense>
+        <Suspense fallback={<LoadingFallback />}>
+          <Portfolio />
+        </Suspense>
+        <Suspense fallback={<LoadingFallback />}>
+          <Testimonials />
+        </Suspense>
+        <Suspense fallback={<LoadingFallback />}>
+          <RegisterForm />
+        </Suspense>
       </main>
       <Footer />
-      <ChatBot />
+      <Suspense fallback={null}>
+        <ChatBot />
+      </Suspense>
     </div>
   );
 };

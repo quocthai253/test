@@ -5,22 +5,34 @@ const Hero: React.FC = () => {
   const blobRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let animationFrameId: number;
+
     const handleScroll = () => {
-      const scrollY = window.scrollY;
-      if (blobRef.current) {
-        blobRef.current.style.transform = `translate(-50%, calc(-50% + ${scrollY * 0.5}px)) scale(${1 + scrollY * 0.001})`;
+      // Use requestAnimationFrame for smoother performance
+      animationFrameId = requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        if (blobRef.current) {
+          blobRef.current.style.transform = `translate(-50%, calc(-50% + ${scrollY * 0.5}px)) scale(${1 + scrollY * 0.001})`;
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
       }
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-between pt-32 pb-0 overflow-hidden bg-tdc-red text-black">
+    <section className="relative min-h-screen flex flex-col justify-between pt-32 pb-0 overflow-hidden bg-tdc-red text-black content-visibility-auto">
       {/* Dynamic Background */}
       <div 
         ref={blobRef}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40vw] h-[40vw] bg-black rounded-full blur-[120px] opacity-[0.2] pointer-events-none mix-blend-multiply"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40vw] h-[40vw] bg-black rounded-full blur-[120px] opacity-[0.2] pointer-events-none mix-blend-multiply will-change-transform"
       ></div>
 
       <div className="container mx-auto px-6 relative z-10 flex flex-col items-start justify-center flex-grow">
